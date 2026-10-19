@@ -21,8 +21,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
           aws-region: eu-north-1
 
-      - name: Deploy portfolio to S3
+      - name: bucket-name
         run: |
-          aws s3 sync . s3://${{ secrets.S3_for-practice-devops }} \
+          aws s3 sync.s3://secrets.S3_for-practice-devops
             --delete \
           
