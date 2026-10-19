@@ -1,23 +1,33 @@
-name: portfolio deploy
+
+name: Portfolio Deploy
 
 on:
-push:
-branches:
--main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-job:
-deploy:
-runs-on: ubuntu-latest
-steps:
--name: checkout
-uses: actions/checkout@v1
+permissions:
+  contents: read
 
--name: configure aws configuration
-uses: aws-actions/configure-aws-credentials@v1
-with:
-aws-access-key-id: $ {{ secrets.AWS_ACCESSS_KEY_ID }}
-aws-secret-access-key:$ {{ secrets.AWS_SECRET_ACCESS_KEY }}
-aws-region: eu-north-1
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-name: deploy statis site to s3
-run: aws s3 sync . s3://for-practice-devops --delete
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Deploy Static Site to S3
+        run: |
+          aws s3 sync . s3://for-practice-devops/ \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude ".gitignore"
